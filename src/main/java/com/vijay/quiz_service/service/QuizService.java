@@ -6,7 +6,6 @@ import com.vijay.quiz_service.model.QuestionWrapper;
 import com.vijay.quiz_service.model.Quiz;
 import com.vijay.quiz_service.model.Response;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -37,29 +36,17 @@ public class QuizService {
     }
 
     public ResponseEntity<List<QuestionWrapper>> getQuizQuestions(Integer id) {
-        // Optional<Quiz> quiz = quizDao.findById(id);
-        // List<Question> questionsFromDB = quiz.get().getQuestions();
+        System.out.println("i am here with quiz id = "+id);
+        List<Integer> questionIds = quizDao.findById(id).get().getQuestionIds();
         List<QuestionWrapper> questionsForUser = new ArrayList<>();
-        // for(Question q : questionsFromDB){
-        //     QuestionWrapper qw = new QuestionWrapper(q.getId(), q.getQuestionTitle(), q.getOption1(), q.getOption2(), q.getOption3(), q.getOption4());
-        //     questionsForUser.add(qw);
-        // }
-
+        questionsForUser= quizInterface.getQuestions(questionIds).getBody();
+        System.out.println("called quizInterface");
         return new ResponseEntity<>(questionsForUser, HttpStatus.OK);
 
     }
 
     public ResponseEntity<Integer> calculateResult(Integer id, List<Response> responses) {
-        // Quiz quiz = quizDao.findById(id).get();
-        // List<Question> questions = quiz.getQuestions();
-        int right = 0;
-        // int i = 0;
-        // for(Response response : responses){
-        //     if(response.getResponse().equals(questions.get(i).getRightAnswer()))
-        //         right++;
-
-        //     i++;
-        // }
+        int right = quizInterface.getScore(responses).getBody();
         return new ResponseEntity<>(right, HttpStatus.OK);
     }
 }
